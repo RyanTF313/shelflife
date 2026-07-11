@@ -1,14 +1,18 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateVideoDto {
   @IsString()
   title!: string;
 
   @IsUrl()
-  url!: string;
+  videoUrl!: string;
 
+  @IsOptional()
   @IsUrl()
-  thumbnail!: string;
+  thumbnailUrl?: string;
+
+  @IsString()
+  publicId!: string;
 
   @IsString()
   productId!: string;

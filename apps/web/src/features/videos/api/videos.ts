@@ -6,9 +6,34 @@ export const getVideos = async (productId: Video["productId"]) => {
   return data;
 };
 
-export const createVideo = async (
-  video: Omit<Video, "id" | "views" | "clicks">,
-) => {
-  const { data } = await api.post("/videos", video);
+export type UploadVideoInput = {
+  file: File;
+  title: string;
+  productId: string;
+  onProgress?: (percent: number) => void;
+};
+
+export const uploadVideo = async ({
+  file,
+  title,
+  productId,
+  onProgress,
+}: UploadVideoInput): Promise<Video> => {
+  const formData = new FormData();
+  formData.append("video", file);
+  formData.append("title", title);
+  formData.append("productId", productId);
+
+  const { data } = await api.post("/videos/upload", formData, {
+    onUploadProgress: (event) => {
+      if (onProgress && event.total) {
+        onProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    },
+  });
   return data;
+};
+
+export const deleteVideo = async (id: string): Promise<void> => {
+  await api.delete(`/videos/${id}`);
 };

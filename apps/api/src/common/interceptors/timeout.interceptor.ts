@@ -5,6 +5,7 @@ import {
   NestInterceptor,
   RequestTimeoutException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import {
   Observable,
   TimeoutError,
@@ -12,14 +13,21 @@ import {
   throwError,
   timeout,
 } from 'rxjs';
+import { TIMEOUT_MS_KEY } from '../decorators/timeout.decorator';
 
-const REQUEST_TIMEOUT_MS = 10_000;
+const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 
 @Injectable()
 export class TimeoutInterceptor implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const timeoutMs =
+      this.reflector.get<number>(TIMEOUT_MS_KEY, context.getHandler()) ??
+      DEFAULT_REQUEST_TIMEOUT_MS;
+
     return next.handle().pipe(
-      timeout(REQUEST_TIMEOUT_MS),
+      timeout(timeoutMs),
       catchError((error: unknown) => {
         if (error instanceof TimeoutError) {
           return throwError(() => new RequestTimeoutException());

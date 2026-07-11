@@ -4,19 +4,23 @@ import FormField from "../../../components/FormField";
 import SubmitButton from "../../../components/SubmitButton";
 
 type ProductFormProps = {
-  product: Product;
+  product?: Partial<Product>;
   onSubmit: (updates: Partial<Product>) => void;
   isSubmitting?: boolean;
+  submitLabel?: string;
+  submittingLabel?: string;
 };
 
 const ProductForm: React.FC<ProductFormProps> = ({
-  product,
+  product = {},
   onSubmit,
   isSubmitting,
+  submitLabel,
+  submittingLabel,
 }) => {
-  const [name, setName] = useState(product.name);
-  const [description, setDescription] = useState(product.description);
-  const [image, setImage] = useState(product.image);
+  const [name, setName] = useState(product.name ?? "");
+  const [description, setDescription] = useState(product.description ?? "");
+  const [image, setImage] = useState(product.image ?? "");
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,7 +37,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
         multiline
       />
       <FormField label="Image URL" value={image} onChange={setImage} />
-      <SubmitButton isSubmitting={isSubmitting} />
+      <SubmitButton
+        isSubmitting={isSubmitting}
+        label={submitLabel}
+        submittingLabel={submittingLabel}
+      />
     </form>
   );
 };

@@ -1,11 +1,15 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import VideoCreateForm from "../components/VideoCreateForm";
-import { useCreateVideo } from "../hooks/useVideos";
+import { useUploadVideo } from "../hooks/useVideos";
+import { useToast } from "../../../components/Toast";
 
 const VideoCreatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const createVideo = useCreateVideo();
+  const uploadVideo = useUploadVideo();
+  const { showToast } = useToast();
+  const [progress, setProgress] = useState(0);
 
   if (!id) return <h2 className="text-red-600">Something went wrong.</h2>;
 
@@ -22,13 +26,23 @@ const VideoCreatePage: React.FC = () => {
           Add Video
         </h1>
         <VideoCreateForm
-          isSubmitting={createVideo.isPending}
-          onSubmit={(video) =>
-            createVideo.mutate(video, {
-              onSuccess: () => navigate(`/products/${id}`),
-            })
-          }
-          productId={id}
+          isSubmitting={uploadVideo.isPending}
+          progress={progress}
+          onSubmit={({ file, title }) => {
+            setProgress(0);
+            uploadVideo.mutate(
+              { file, title, productId: id, onProgress: setProgress },
+              {
+                onSuccess: () => {
+                  showToast(`"${title}" uploaded successfully`);
+                  navigate(`/products/${id}`);
+                },
+                onError: () => {
+                  showToast("Video upload failed. Please try again.", "error");
+                },
+              },
+            );
+          }}
         />
       </div>
     </div>
