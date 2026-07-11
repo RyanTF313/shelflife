@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { VideosService } from './videos.service';
-import { type Video } from '@shelflife/shared';
+import { CreateVideoDto } from './dto/create-video.dto';
 
 @Controller('videos')
 export class VideosController {
@@ -12,7 +12,7 @@ export class VideosController {
   }
 
   @Post()
-  create(@Body() body: Omit<Video, 'id' | 'views' | 'clicks'>) {
+  create(@Body() body: CreateVideoDto) {
     return this.videosService.create(body);
   }
 }
