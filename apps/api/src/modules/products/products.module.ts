@@ -7,5 +7,6 @@ import { VideosModule } from '../videos/videos.module';
   imports: [VideosModule],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

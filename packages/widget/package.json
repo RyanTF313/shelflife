@@ -1,0 +1,6 @@
+{
+  "name": "@shelflife/widget",
+  "version": "1.0.0",
+  "private": true,
+  "main": "widget.js"
+}

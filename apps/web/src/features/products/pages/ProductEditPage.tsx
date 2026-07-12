@@ -1,19 +1,25 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ProductForm from "../components/ProductForm";
+import ErrorState from "../../../components/ErrorState";
 import { useProduct, useUpdateProduct } from "../hooks/useProducts";
 
 export default function ProductEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: product, isLoading, error } = useProduct(id ?? "");
+  const { data: product, isLoading, error, refetch } = useProduct(id ?? "");
   const updateProduct = useUpdateProduct(id ?? "");
 
-  if (!id) return <h2 className="text-red-600">Something went wrong.</h2>;
+  if (!id) return <ErrorState message="Something went wrong." />;
 
   if (isLoading) return <h2 className="text-gray-600">Loading...</h2>;
 
   if (error || !product)
-    return <h2 className="text-red-600">Something went wrong.</h2>;
+    return (
+      <ErrorState
+        message="Couldn't load this product."
+        onRetry={() => refetch()}
+      />
+    );
 
   return (
     <div>

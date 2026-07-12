@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acme Co. — Wireless Headphones</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #f4f4f5;
+        color: #18181b;
+      }
+      header {
+        background: #18181b;
+        color: #fff;
+        padding: 16px 24px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+      .banner {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        color: #92400e;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 0 0 8px;
+      }
+      .price {
+        font-size: 20px;
+        color: #16a34a;
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+      section {
+        background: #fff;
+        border: 1px solid #e4e4e7;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 24px;
+      }
+      section h2 {
+        font-size: 16px;
+        margin: 0 0 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Acme Co.</header>
+    <main>
+      <div class="banner" id="banner">
+        This is a plain, unrelated HTML page. It's standing in for a
+        creator's own site to prove the Shelflife widget works when embedded
+        anywhere — add <code>?productId=&lt;id&gt;</code> to this page's URL
+        (or use the "Preview" link from the dashboard's Embed panel).
+      </div>
+      <h1>Wireless Headphones</h1>
+      <div class="price">$129.00</div>
+      <p>
+        Premium over-ear headphones with active noise cancellation and 30
+        hours of battery life.
+      </p>
+      <section>
+        <h2>Videos</h2>
+        <div id="widget-mount"></div>
+      </section>
+    </main>
+    <script>
+      var params = new URLSearchParams(window.location.search);
+      var productId = params.get("productId");
+      var apiUrl = params.get("apiUrl") || "http://localhost:3000";
+
+      if (productId) {
+        var script = document.createElement("script");
+        script.src = apiUrl + "/widget.js";
+        script.setAttribute("data-product-id", productId);
+        script.setAttribute("data-api-url", apiUrl);
+        script.async = true;
+        document.getElementById("widget-mount").appendChild(script);
+      } else {
+        document.getElementById("widget-mount").textContent =
+          "Add ?productId=<id> to this page's URL to load the widget.";
+      }
+    </script>
+  </body>
+</html>

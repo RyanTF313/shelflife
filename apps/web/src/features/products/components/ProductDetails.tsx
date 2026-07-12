@@ -3,6 +3,8 @@ import type { Product, Video } from "@shelflife/shared";
 import VideoCard from "../../videos/components/VideoCard";
 import { useDeleteProduct } from "../hooks/useProducts";
 import { useToast } from "../../../components/Toast";
+import EmptyState from "../../../components/EmptyState";
+import EmbedCodeButton from "./EmbedCodeButton";
 
 type ProductDetailsProps = {
   product: Product;
@@ -48,7 +50,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           {product.name}
         </h1>
         <p className="text-center text-gray-600">{product.description}</p>
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <Link
+            to={`/products/${product.id}/analytics`}
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Analytics
+          </Link>
           <Link
             to={`/products/${product.id}/edit`}
             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
@@ -64,22 +72,40 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             {isPending ? "Deleting..." : "Delete"}
           </button>
         </div>
+        <div className="mt-2 w-full max-w-md">
+          <EmbedCodeButton productId={product.id} />
+        </div>
       </div>
       <div className="mt-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Videos</h2>
           <Link
             to={`/products/${product.id}/videos/create`}
-            className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+            className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
           >
             Add Video
           </Link>
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {videos?.map((video) => (
-            <VideoCard key={video.id} video={video} />
-          ))}
-        </div>
+        {videos.length === 0 ? (
+          <EmptyState
+            title="No videos yet"
+            description="Add a video to start tracking views and clicks for this product."
+            action={
+              <Link
+                to={`/products/${product.id}/videos/create`}
+                className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+              >
+                Add Video
+              </Link>
+            }
+          />
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {videos.map((video) => (
+              <VideoCard key={video.id} video={video} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import VideoCreateForm from "../components/VideoCreateForm";
 import { useUploadVideo } from "../hooks/useVideos";
 import { useToast } from "../../../components/Toast";
+import ErrorState from "../../../components/ErrorState";
 
 const VideoCreatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +12,7 @@ const VideoCreatePage: React.FC = () => {
   const { showToast } = useToast();
   const [progress, setProgress] = useState(0);
 
-  if (!id) return <h2 className="text-red-600">Something went wrong.</h2>;
+  if (!id) return <ErrorState message="Something went wrong." />;
 
   return (
     <div>

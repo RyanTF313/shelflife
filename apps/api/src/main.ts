@@ -11,8 +11,13 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
 
-  app.enableCors({
-    origin: configService.get<string>('app.corsOrigin'),
+  // The embeddable widget runs on arbitrary third-party origins, so its
+  // routes get an open CORS policy independent of the dashboard's CORS_ORIGIN.
+  app.enableCors((req, callback) => {
+    const isWidgetRoute = req.path.startsWith('/widget');
+    callback(null, {
+      origin: isWidgetRoute ? true : configService.get<string>('app.corsOrigin'),
+    });
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
